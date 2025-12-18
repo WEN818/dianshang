@@ -14,6 +14,44 @@
         button:hover { background-color: #85ce61; }
         a { color: #409eff; text-decoration: none; margin-left: 12px; }
         a:hover { text-decoration: underline; }
+        .logout-btn { 
+            display: inline-block;
+            padding: 8px 16px; 
+            background-color: #f56c6c; 
+            color: #fff; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            margin-left: 12px;
+            font-weight: bold;
+            border: 2px solid #f56c6c;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover { 
+            background-color: #f78989; 
+            border-color: #f78989;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(245, 108, 108, 0.3);
+            text-decoration: none;
+        }
+        .cart-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #67c23a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 12px;
+            font-weight: bold;
+            border: 2px solid #67c23a;
+            transition: all 0.3s ease;
+        }
+        .cart-btn:hover {
+            background-color: #85ce61;
+            border-color: #85ce61;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(103, 194, 58, 0.3);
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -21,7 +59,14 @@
     <div>中小型电商系统</div>
     <div>
         <span th:text="'当前用户：' + ${username}"></span>
-        <a th:href="@{/cart/page}">购物车</a>
+        <a th:href="@{/cart/page}" class="cart-btn">
+            🛒 购物车
+            <span th:if="${cartItemCount != null and cartItemCount > 0}" 
+                  th:text="'(' + ${cartItemCount} + ')'" 
+                  style="background-color: #f56c6c; padding: 2px 6px; border-radius: 10px; margin-left: 4px; font-size: 12px;">
+            </span>
+        </a>
+        <a th:href="@{/logout}" class="logout-btn">🚪 退出登录</a>
     </div>
 </header>
 <div class="container">
