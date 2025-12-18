@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>学生登录 - 电商系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 400px; margin: 80px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        h2 { text-align: center; margin-bottom: 24px; }
+        label { display: block; margin-bottom: 8px; }
+        input { width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #409eff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #66b1ff; }
+        .link { text-align: center; margin-top: 12px; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>学生登录</h2>
+    <form th:action="@{/login}" method="post">
+        <label>用户名</label>
+        <input type="text" name="username" required>
+        <label>密码</label>
+        <input type="password" name="password" required>
+        <button type="submit">登录</button>
+    </form>
+    <div class="link">
+        <span>如需注册账号，请调用后端接口 /register</span>
+    </div>
+</div>
+</body>
+</html>
+
+
+

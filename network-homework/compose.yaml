@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: 'mysql:8.0'
+    container_name: mysql-network-homework
+    environment:
+      - MYSQL_DATABASE=network_homework
+      - MYSQL_USER=network_user
+      - MYSQL_PASSWORD=network_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+    image: network-homework-app
+    container_name: network-homework-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/network_homework?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=network_user
+      - SPRING_DATASOURCE_PASSWORD=network_password
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:
