@@ -1,6 +1,17 @@
-# 温恺曼 202230443019
-
 # 中小型电商系统（网络作业）
+
+**学号**：202230443019  
+**姓名**：温恺曼
+
+---
+
+## 项目简介
+
+本项目是一个基于 **Spring Boot + MySQL + Docker + Thymeleaf** 的中小型电商系统，实现了完整的用户认证、商品管理和购物车功能。
+
+**详细文档请查看**：[network-homework/README.md](./network-homework/README.md)
+
+**实验报告请查看**：[network-homework/实验报告.md](./network-homework/实验报告.md)
 
 基于 **Spring Boot + MySQL + Docker** 的简易电商后端，包含：
 
