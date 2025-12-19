@@ -25,3 +25,4 @@ if ! docker ps | grep -q "mysql-network-homework.*Up"; then
     docker-compose up -d mysql >> "$LOG_FILE" 2>&1
 fi
 
+
