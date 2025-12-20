@@ -1,6 +1,7 @@
 package com.example.network_homework.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +35,22 @@ public class CartService {
             throw new IllegalArgumentException("商品已下架");
         }
 
-        CartItem cartItem = new CartItem();
-        cartItem.setUserId(userId);
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-        return cartItemRepository.save(cartItem);
+        // 检查购物车中是否已存在该商品
+        Optional<CartItem> existingItem = cartItemRepository.findByUserIdAndProductId(userId, productId);
+        
+        if (existingItem.isPresent()) {
+            // 如果已存在，更新数量（累加）
+            CartItem cartItem = existingItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            return cartItemRepository.save(cartItem);
+        } else {
+            // 如果不存在，创建新的购物车项
+            CartItem cartItem = new CartItem();
+            cartItem.setUserId(userId);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            return cartItemRepository.save(cartItem);
+        }
     }
     
     @Transactional

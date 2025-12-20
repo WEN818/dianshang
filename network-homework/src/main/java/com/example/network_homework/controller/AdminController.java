@@ -30,15 +30,31 @@ public class AdminController {
     }
 
     @PostMapping("/orders/{orderId}/ship")
-    public ResponseEntity<Order> shipOrder(@PathVariable Long orderId) {
-        Order shippedOrder = orderService.shipOrder(orderId);
-        return ResponseEntity.ok(shippedOrder);
+    public ResponseEntity<?> shipOrder(@PathVariable Long orderId) {
+        try {
+            Order shippedOrder = orderService.shipOrder(orderId);
+            return ResponseEntity.ok(shippedOrder);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("发货失败：" + e.getMessage());
+        }
     }
 
     @PostMapping("/orders/{orderId}/complete")
-    public ResponseEntity<Order> completeOrder(@PathVariable Long orderId) {
-        Order completedOrder = orderService.completeOrder(orderId);
-        return ResponseEntity.ok(completedOrder);
+    public ResponseEntity<?> completeOrder(@PathVariable Long orderId) {
+        try {
+            Order completedOrder = orderService.completeOrder(orderId);
+            return ResponseEntity.ok(completedOrder);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("操作失败：" + e.getMessage());
+        }
     }
 
     @GetMapping("/statistics")

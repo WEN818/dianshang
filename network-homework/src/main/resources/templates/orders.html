@@ -5,7 +5,7 @@
     <title>我的订单 - 电商系统</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
-        header { background-color: #409eff; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        header { background-color: #409eff; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,.2); }
         .container { max-width: 1000px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
@@ -18,22 +18,64 @@
         .status-cancelled { background-color: #fef0f0; color: #f56c6c; }
         a { color: #409eff; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        .header-btn { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background-color: #fff; 
+            color: #409eff; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 18px; 
+            border: 3px solid #fff;
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+        .header-btn:hover { 
+            background-color: #ecf5ff; 
+            border-color: #409eff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,.4);
+        }
+        .logout-btn { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background-color: #f56c6c !important; 
+            color: #fff !important; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 18px; 
+            border: 3px solid #f56c6c;
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+        .logout-btn:hover { 
+            background-color: #f78989 !important; 
+            border-color: #f78989;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,.4);
+        }
         .btn { display: inline-block; padding: 8px 16px; background-color: #409eff; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 8px; font-weight: bold; }
         .btn:hover { background-color: #66b1ff; }
-        .logout-btn { background-color: #f56c6c !important; }
-        .logout-btn:hover { background-color: #f78989 !important; }
     </style>
 </head>
 <body>
 <header>
     <div>中小型电商系统</div>
     <div>
-        <span th:text="'当前用户：' + ${username}"></span>
-        <a th:href="@{/products/page}" class="btn">🏠 商品列表</a>
-        <a th:href="@{/cart/page}" class="btn">🛒 购物车</a>
-        <a th:if="${isAdmin}" th:href="@{/admin}" style="display: inline-block; padding: 10px 20px; background-color: #e6a23c; color: #fff; text-decoration: none; border-radius: 6px; margin-left: 12px; font-weight: bold; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,.1);">⚙️ 管理后台</a>
-        <a th:if="${!isAdmin}" th:href="@{/deactivate/page}" style="display: inline-block; padding: 10px 20px; background-color: #c0c4cc; color: #fff; text-decoration: none; border-radius: 6px; margin-left: 12px; font-weight: bold; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,.1);">🗑️ 注销账户</a>
-        <a th:href="@{/logout}" class="btn logout-btn">🚪 退出登录</a>
+        <span th:text="'当前用户：' + ${username}" style="margin-right: 16px; font-size: 16px; font-weight: bold;"></span>
+        <a th:href="@{/products/page}" class="header-btn" style="background-color: #409eff; color: #fff; border-color: #409eff;">🏠 商品列表</a>
+        <a th:href="@{/cart/page}" class="header-btn" style="background-color: #67c23a; color: #fff; border-color: #67c23a;">🛒 购物车</a>
+        <a th:if="${isAdmin}" th:href="@{/admin}" class="header-btn" style="background-color: #e6a23c; color: #fff; border-color: #e6a23c;">⚙️ 管理后台</a>
+        <a th:if="${!isAdmin}" th:href="@{/deactivate/page}" class="header-btn" style="background-color: #c0c4cc; color: #fff; border-color: #c0c4cc;">🗑️ 注销账户</a>
+        <a th:href="@{/logout}" class="logout-btn">🚪 退出登录</a>
     </div>
 </header>
 <div class="container">
@@ -67,20 +109,81 @@
             <td>
                 <a th:href="@{/orders/{orderId}(orderId=${order.id})}" class="btn">查看详情</a>
                 <a th:if="${order.status.name() == 'PENDING_PAYMENT'}" 
-                   th:href="@{'/orders/' + ${order.id} + '/pay'}" 
-                   class="btn" 
+                   href="#" 
+                   class="btn pay-btn" 
                    style="background-color: #67c23a;"
-                   onclick="return confirm('确认支付该订单？');">支付</a>
+                   th:data-order-id="${order.id}">支付</a>
                 <a th:if="${order.status.name() == 'PENDING_PAYMENT'}" 
-                   th:href="@{'/orders/' + ${order.id} + '/cancel'}" 
-                   class="btn" 
+                   href="#" 
+                   class="btn cancel-btn" 
                    style="background-color: #f56c6c;"
-                   onclick="return confirm('确认取消该订单？');">取消</a>
+                   th:data-order-id="${order.id}">取消</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 支付按钮事件
+        document.querySelectorAll('.pay-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var orderId = this.getAttribute('data-order-id');
+                if (!confirm('确认支付该订单？')) return;
+                fetch('/api/orders/' + orderId + '/pay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('支付成功！');
+                        location.reload();
+                    } else {
+                        response.text().then(text => {
+                            alert('支付失败：' + text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('支付失败，请稍后重试');
+                });
+            });
+        });
+        
+        // 取消按钮事件
+        document.querySelectorAll('.cancel-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var orderId = this.getAttribute('data-order-id');
+                if (!confirm('确认取消该订单？')) return;
+                fetch('/api/orders/' + orderId + '/cancel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('订单已取消');
+                        location.reload();
+                    } else {
+                        response.text().then(text => {
+                            alert('取消失败：' + text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('取消失败，请稍后重试');
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>
 

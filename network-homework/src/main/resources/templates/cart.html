@@ -5,26 +5,64 @@
     <title>购物车 - 电商系统</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
-        header { background-color: #409eff; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        header { background-color: #409eff; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,.2); }
         .container { max-width: 900px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 8px 12px; border-bottom: 1px solid #eee; text-align: left; }
         th { background-color: #fafafa; }
         button { padding: 6px 12px; background-color: #f56c6c; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background-color: #f78989; }
-        a { color: #409eff; text-decoration: none; margin-left: 12px; }
-        a:hover { text-decoration: underline; }
+        .header-btn { 
+            display: inline-block; 
+            padding: 12px 24px; 
+            background-color: #fff; 
+            color: #409eff; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 16px; 
+            border: 2px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,.2);
+            transition: all 0.3s ease;
+        }
+        .header-btn:hover { 
+            background-color: #ecf5ff; 
+            border-color: #409eff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+        }
+        .logout-btn { 
+            display: inline-block; 
+            padding: 12px 24px; 
+            background-color: #f56c6c !important; 
+            color: #fff !important; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 16px; 
+            border: 2px solid #f56c6c;
+            box-shadow: 0 4px 8px rgba(0,0,0,.2);
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover { 
+            background-color: #f78989 !important; 
+            border-color: #f78989;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+        }
     </style>
 </head>
 <body>
 <header>
     <div>中小型电商系统</div>
     <div>
-        <span th:text="'当前用户：' + ${username}"></span>
-        <a th:href="@{/products/page}">返回商品列表</a>
-        <a th:href="@{/orders/page}" style="display: inline-block; padding: 8px 16px; background-color: #909399; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">📦 我的订单</a>
-        <a th:if="${isAdmin}" th:href="@{/admin}" style="display: inline-block; padding: 8px 16px; background-color: #e6a23c; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">⚙️ 管理后台</a>
-        <a th:if="${!isAdmin}" th:href="@{/deactivate/page}" style="display: inline-block; padding: 8px 16px; background-color: #c0c4cc; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">🗑️ 注销账户</a>
+        <span th:text="'当前用户：' + ${username}" style="margin-right: 16px; font-size: 16px; font-weight: bold;"></span>
+        <a th:href="@{/products/page}" class="header-btn" style="background-color: #409eff; color: #fff; border-color: #409eff;">🏠 商品列表</a>
+        <a th:href="@{/orders/page}" class="header-btn" style="background-color: #909399; color: #fff; border-color: #909399;">📦 我的订单</a>
+        <a th:if="${isAdmin}" th:href="@{/admin}" class="header-btn" style="background-color: #e6a23c; color: #fff; border-color: #e6a23c;">⚙️ 管理后台</a>
+        <a th:if="${!isAdmin}" th:href="@{/deactivate/page}" class="header-btn" style="background-color: #c0c4cc; color: #fff; border-color: #c0c4cc;">🗑️ 注销账户</a>
         <a th:href="@{/logout}" class="logout-btn">🚪 退出登录</a>
     </div>
 </header>
@@ -37,9 +75,15 @@
             <th>单价</th>
             <th>数量</th>
             <th>小计</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${#lists.isEmpty(items)}">
+            <td colspan="5" style="text-align: center; padding: 40px; color: #909399;">
+                购物车为空，<a th:href="@{/products/page}" style="color: #409eff;">去购物</a>
+            </td>
+        </tr>
         <tr th:each="item : ${items}">
             <td th:text="${item.product.name}">name</td>
             <td th:text="'¥' + ${#numbers.formatDecimal(item.product.price, 1, 2)}">0</td>

@@ -5,7 +5,51 @@
     <title>订单详情 - 电商系统</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
-        header { background-color: #409eff; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        header { background-color: #409eff; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,.2); }
+        .header-btn { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background-color: #fff; 
+            color: #409eff; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 18px; 
+            border: 3px solid #fff;
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+        .header-btn:hover { 
+            background-color: #ecf5ff; 
+            border-color: #409eff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,.4);
+        }
+        .logout-btn { 
+            display: inline-block; 
+            padding: 14px 28px; 
+            background-color: #f56c6c !important; 
+            color: #fff !important; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            margin-left: 12px; 
+            font-weight: bold; 
+            font-size: 18px; 
+            border: 3px solid #f56c6c;
+            box-shadow: 0 6px 12px rgba(0,0,0,.3);
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+        .logout-btn:hover { 
+            background-color: #f78989 !important; 
+            border-color: #f78989;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,.4);
+        }
         .container { max-width: 900px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
         .info-section { margin-bottom: 24px; }
         .info-section h3 { border-bottom: 2px solid #409eff; padding-bottom: 8px; }
@@ -29,10 +73,10 @@
 <header>
     <div>中小型电商系统</div>
     <div>
-        <span th:text="'当前用户：' + ${username}"></span>
-        <a th:href="@{/orders/page}" class="btn">返回订单列表</a>
-        <a th:href="@{/products/page}" class="btn">商品列表</a>
-        <a th:href="@{/logout}" class="btn" style="background-color: #f56c6c;">退出登录</a>
+        <span th:text="'当前用户：' + ${username}" style="margin-right: 16px; font-size: 16px; font-weight: bold;"></span>
+        <a th:href="@{/orders/page}" class="header-btn" style="background-color: #909399; color: #fff; border-color: #909399;">📦 返回订单列表</a>
+        <a th:href="@{/products/page}" class="header-btn" style="background-color: #409eff; color: #fff; border-color: #409eff;">🏠 商品列表</a>
+        <a th:href="@{/logout}" class="logout-btn">🚪 退出登录</a>
     </div>
 </header>
 <div class="container">
@@ -104,41 +148,64 @@
     </div>
     <div style="margin-top: 24px;">
         <a th:if="${order.status.name() == 'PENDING_PAYMENT'}" 
-           th:href="@{'/api/orders/' + ${order.id} + '/pay'}" 
+           href="#" 
            class="btn" 
            style="background-color: #67c23a;"
-           onclick="event.preventDefault(); payOrder(this.href);">支付订单</a>
+           th:onclick="'payOrder(' + ${order.id} + '); return false;'">支付订单</a>
         <a th:if="${order.status.name() == 'PENDING_PAYMENT'}" 
-           th:href="@{'/api/orders/' + ${order.id} + '/cancel'}" 
+           href="#" 
            class="btn" 
            style="background-color: #f56c6c;"
-           onclick="event.preventDefault(); cancelOrder(this.href);">取消订单</a>
+           th:onclick="'cancelOrder(' + ${order.id} + '); return false;'">取消订单</a>
     </div>
 </div>
 <script>
-    function payOrder(url) {
+    function payOrder(orderId) {
         if (!confirm('确认支付该订单？')) return;
-        fetch(url, { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    alert('支付成功！');
-                    location.reload();
-                } else {
-                    alert('支付失败，请稍后重试');
-                }
-            });
+        fetch('/api/orders/' + orderId + '/pay', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('支付成功！');
+                location.reload();
+            } else if (response.status === 403) {
+                alert('您没有权限支付此订单');
+            } else {
+                alert('支付失败，请稍后重试');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('支付失败，请稍后重试');
+        });
     }
-    function cancelOrder(url) {
+    
+    function cancelOrder(orderId) {
         if (!confirm('确认取消该订单？')) return;
-        fetch(url, { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    alert('订单已取消');
-                    location.reload();
-                } else {
-                    alert('取消失败，请稍后重试');
-                }
-            });
+        fetch('/api/orders/' + orderId + '/cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('订单已取消');
+                location.reload();
+            } else if (response.status === 403) {
+                alert('您没有权限取消此订单');
+            } else {
+                alert('取消失败，请稍后重试');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('取消失败，请稍后重试');
+        });
     }
 </script>
 </body>

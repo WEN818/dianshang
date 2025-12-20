@@ -5,8 +5,8 @@ services:
     environment:
       - MYSQL_DATABASE=network_homework
       - MYSQL_USER=network_user
-      - MYSQL_PASSWORD=network_password
-      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_PASSWORD=wkm20040818@
+      - MYSQL_ROOT_PASSWORD=wkm20040818@
     ports:
       - "3307:3306"
     command: --default-authentication-plugin=mysql_native_password
@@ -30,7 +30,17 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/network_homework?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=network_user
-      - SPRING_DATASOURCE_PASSWORD=network_password
+      - SPRING_DATASOURCE_PASSWORD=wkm20040818@
+      - SPRING_MAIL_HOST=smtp.qq.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=937238852@qq.com
+      - SPRING_MAIL_PASSWORD=akxpzriwzxifbefd
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_ENABLE=false
+      - SPRING_MAIL_DEFAULT_ENCODING=UTF-8
+      - SPRING_MAIL_FROM=937238852@qq.com
     ports:
       - "8080:8080"
 
