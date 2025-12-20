@@ -1,13 +1,14 @@
 package com.example.network_homework.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.network_homework.entity.CartItem;
 import com.example.network_homework.entity.Product;
 import com.example.network_homework.repository.CartItemRepository;
 import com.example.network_homework.repository.ProductRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class CartService {
@@ -26,14 +27,24 @@ public class CartService {
 
     @Transactional
     public CartItem addToCart(String userId, Long productId, Integer quantity) {
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findActiveById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("商品不存在"));
+        
+        if (product.getDeleted() != null && product.getDeleted()) {
+            throw new IllegalArgumentException("商品已下架");
+        }
 
         CartItem cartItem = new CartItem();
         cartItem.setUserId(userId);
         cartItem.setProduct(product);
         cartItem.setQuantity(quantity);
         return cartItemRepository.save(cartItem);
+    }
+    
+    @Transactional
+    public void removeProductFromCarts(Long productId) {
+        List<CartItem> cartItems = cartItemRepository.findByProductId(productId);
+        cartItemRepository.deleteAll(cartItems);
     }
 
     @Transactional

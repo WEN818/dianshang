@@ -22,6 +22,10 @@
     <div>
         <span th:text="'当前用户：' + ${username}"></span>
         <a th:href="@{/products/page}">返回商品列表</a>
+        <a th:href="@{/orders/page}" style="display: inline-block; padding: 8px 16px; background-color: #909399; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">📦 我的订单</a>
+        <a th:if="${isAdmin}" th:href="@{/admin}" style="display: inline-block; padding: 8px 16px; background-color: #e6a23c; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">⚙️ 管理后台</a>
+        <a th:if="${!isAdmin}" th:href="@{/deactivate/page}" style="display: inline-block; padding: 8px 16px; background-color: #c0c4cc; color: #fff; text-decoration: none; border-radius: 4px; margin-left: 12px; font-weight: bold;">🗑️ 注销账户</a>
+        <a th:href="@{/logout}" class="logout-btn">🚪 退出登录</a>
     </div>
 </header>
 <div class="container">
@@ -38,12 +42,30 @@
         <tbody>
         <tr th:each="item : ${items}">
             <td th:text="${item.product.name}">name</td>
-            <td th:text="${item.product.price}">0</td>
-            <td th:text="${item.quantity}">1</td>
-            <td th:text="${item.product.price * item.quantity}">0</td>
+            <td th:text="'¥' + ${#numbers.formatDecimal(item.product.price, 1, 2)}">0</td>
+            <td>
+                <form th:action="@{/cart/update}" method="post" style="display:inline-block;">
+                    <input type="hidden" name="cartItemId" th:value="${item.id}">
+                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" style="width:60px;">
+                    <button type="submit">更新</button>
+                </form>
+            </td>
+            <td th:text="'¥' + ${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">0</td>
+            <td>
+                <form th:action="@{/cart/remove}" method="post" style="display:inline-block;">
+                    <input type="hidden" name="cartItemId" th:value="${item.id}">
+                    <button type="submit" style="background-color: #f56c6c;">删除</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
+    <div style="margin-top: 20px; text-align: right;">
+        <p style="font-size: 18px; font-weight: bold;">
+            总计：<span th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(items.![product.price * quantity]), 1, 2)}">0</span>
+        </p>
+        <a th:href="@{/checkout/page}" style="display: inline-block; padding: 12px 24px; background-color: #67c23a; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 12px;">去结算</a>
+    </div>
 </div>
 </body>
 </html>

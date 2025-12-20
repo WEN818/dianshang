@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>客户详情 - 电商系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
+        header { background-color: #409eff; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        .nav-menu { background-color: #fafafa; padding: 16px; border-radius: 4px; margin-bottom: 24px; }
+        .nav-menu a { display: inline-block; padding: 8px 16px; margin-right: 8px; background-color: #409eff; color: #fff; text-decoration: none; border-radius: 4px; }
+        .nav-menu a:hover { background-color: #66b1ff; }
+        .info-section { margin-bottom: 24px; }
+        .info-section h3 { border-bottom: 2px solid #409eff; padding-bottom: 8px; }
+        .info-row { display: flex; margin-bottom: 12px; }
+        .info-label { width: 120px; font-weight: bold; color: #606266; }
+        .info-value { flex: 1; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background-color: #fafafa; }
+        .status { padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+        .status-pending { background-color: #fdf6ec; color: #e6a23c; }
+        .status-paid { background-color: #ecf5ff; color: #409eff; }
+        .status-shipped { background-color: #f0f9ff; color: #67c23a; }
+        .status-completed { background-color: #f0f9ff; color: #67c23a; }
+        .status-cancelled { background-color: #fef0f0; color: #f56c6c; }
+        .btn { display: inline-block; padding: 6px 12px; background-color: #409eff; color: #fff; text-decoration: none; border-radius: 4px; font-size: 12px; }
+        .btn:hover { background-color: #66b1ff; }
+    </style>
+</head>
+<body>
+<header>
+    <div>中小型电商系统 - 管理后台</div>
+    <div>
+        <span th:text="'当前用户：' + ${username}"></span>
+        <a th:href="@{/admin}" style="background-color: #e6a23c !important; color: #fff !important;">⚙️ 管理后台</a>
+        <a th:href="@{/admin/customers}">返回客户列表</a>
+        <a th:href="@{/logout}" style="color: #fff; text-decoration: none; margin-left: 12px;">退出登录</a>
+    </div>
+</header>
+<div class="container">
+    <h2>客户详情</h2>
+    <div class="nav-menu">
+        <a th:href="@{/admin}">📊 数据概览</a>
+        <a th:href="@{/admin/orders}">📦 订单管理</a>
+        <a th:href="@{/admin/customers}">👥 客户管理</a>
+        <a th:href="@{/admin/products}">🛍️ 商品管理</a>
+    </div>
+    <div class="info-section">
+        <h3>用户信息</h3>
+        <div class="info-row">
+            <div class="info-label">用户名：</div>
+            <div class="info-value" th:text="${customer.username}">user</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">邮箱：</div>
+            <div class="info-value" th:text="${customer.email}">email@example.com</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">角色：</div>
+            <div class="info-value">
+                <span th:text="${customer.role == 'ROLE_ADMIN'} ? '管理员' : '普通用户'"></span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">状态：</div>
+            <div class="info-value">
+                <span th:if="${customer.enabled == null || customer.enabled}" style="color: #67c23a; font-weight: bold;">启用</span>
+                <span th:if="${customer.enabled != null && !customer.enabled}" style="color: #f56c6c; font-weight: bold;">停用</span>
+            </div>
+        </div>
+    </div>
+    <div class="info-section">
+        <h3>订单列表</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>金额</th>
+                <th>状态</th>
+                <th>下单时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="5" style="text-align: center; padding: 40px; color: #909399;">该用户暂无订单</td>
+            </tr>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderNumber}">ORD001</td>
+                <td th:text="'¥' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">0</td>
+                <td>
+                    <span class="status" th:classappend="${statusUtil.getClass(order.status)}" th:text="${statusUtil.getText(order.status)}">待支付</span>
+                </td>
+                <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</td>
+                <td>
+                    <a th:href="@{/orders/{orderId}(orderId=${order.id})}" class="btn">查看详情</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+

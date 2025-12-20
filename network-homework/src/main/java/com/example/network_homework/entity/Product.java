@@ -19,6 +19,8 @@ public class Product {
     private Double price;
 
     private Integer stock;
+    
+    private Boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -58,6 +60,14 @@ public class Product {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
 

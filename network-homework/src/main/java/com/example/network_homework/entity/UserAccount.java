@@ -18,6 +18,11 @@ public class UserAccount {
 
     @Column(nullable = false)
     private String role = "ROLE_USER";
+    
+    private String email;
+    
+    @Column(nullable = false)
+    private Boolean enabled = true;
 
     public Long getId() {
         return id;
@@ -49,6 +54,22 @@ public class UserAccount {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
 

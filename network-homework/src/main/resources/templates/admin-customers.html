@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>客户管理 - 电商系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; }
+        header { background-color: #409eff; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        .nav-menu { background-color: #fafafa; padding: 16px; border-radius: 4px; margin-bottom: 24px; }
+        .nav-menu a { display: inline-block; padding: 8px 16px; margin-right: 8px; background-color: #409eff; color: #fff; text-decoration: none; border-radius: 4px; }
+        .nav-menu a:hover { background-color: #66b1ff; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background-color: #fafafa; }
+        .role-admin { background-color: #e6a23c; color: #fff; }
+        .role-user { background-color: #909399; color: #fff; }
+        .status-enabled { color: #67c23a; font-weight: bold; }
+        .status-disabled { color: #f56c6c; font-weight: bold; }
+        .btn { display: inline-block; padding: 6px 12px; background-color: #409eff; color: #fff; text-decoration: none; border-radius: 4px; font-size: 12px; }
+        .btn:hover { background-color: #66b1ff; }
+    </style>
+</head>
+<body>
+<header>
+    <div>中小型电商系统 - 管理后台</div>
+    <div>
+        <span th:text="'当前用户：' + ${username}"></span>
+        <a th:href="@{/admin}" style="background-color: #e6a23c !important; color: #fff !important;">⚙️ 管理后台</a>
+        <a th:href="@{/products/page}" style="color: #fff; text-decoration: none; margin-left: 12px;">返回商城</a>
+        <a th:href="@{/logout}" style="color: #fff; text-decoration: none; margin-left: 12px;">退出登录</a>
+    </div>
+</header>
+<div class="container">
+    <h2>客户管理</h2>
+    <div class="nav-menu">
+        <a th:href="@{/admin}">📊 数据概览</a>
+        <a th:href="@{/admin/orders}">📦 订单管理</a>
+        <a th:href="@{/admin/customers}">👥 客户管理</a>
+        <a th:href="@{/admin/products}">🛍️ 商品管理</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>用户名</th>
+            <th>邮箱</th>
+            <th>角色</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.username}">user</td>
+            <td th:text="${customer.email}">email@example.com</td>
+            <td>
+                <span class="role-admin" th:if="${customer.role == 'ROLE_ADMIN'}">管理员</span>
+                <span class="role-user" th:if="${customer.role != 'ROLE_ADMIN'}">普通用户</span>
+            </td>
+            <td>
+                <span class="status-enabled" th:if="${customer.enabled == null || customer.enabled}">启用</span>
+                <span class="status-disabled" th:if="${customer.enabled != null && !customer.enabled}">停用</span>
+            </td>
+            <td>
+                <a th:href="@{/admin/customers/{userId}(userId=${customer.username})}" class="btn">查看详情</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+

@@ -17,7 +17,15 @@
 <body>
 <div class="container">
     <h2>学生登录</h2>
-    <form th:action="@{/login}" method="post">
+    <div th:if="${param.error != null}" style="background-color: #fef0f0; border: 1px solid #f56c6c; color: #f56c6c; padding: 12px; border-radius: 4px; margin-bottom: 16px;">
+        <strong>登录失败：</strong>
+        <span th:if="${param.error[0] == 'disabled'}">账户已停用，无法登录</span>
+        <span th:if="${param.error[0] != 'disabled'}">用户名或密码错误，或账户已停用</span>
+    </div>
+    <div th:if="${param.logout != null}" style="background-color: #f0f9ff; border: 1px solid #67c23a; color: #67c23a; padding: 12px; border-radius: 4px; margin-bottom: 16px;">
+        <strong>已成功退出登录</strong>
+    </div>
+    <form th:action="@{/login}" method="post" id="loginForm">
         <label>用户名</label>
         <input type="text" name="username" required>
         <label>密码</label>
@@ -25,8 +33,25 @@
         <button type="submit">登录</button>
     </form>
     <div class="link">
-        <span>如需注册账号，请调用后端接口 /register</span>
+        <a th:href="@{/register/page}">还没有账号？立即注册</a>
     </div>
+<script>
+    // 页面加载时清除可能存在的旧会话Cookie
+    (function() {
+        document.cookie.split(";").forEach(function(c) { 
+            var eqPos = c.indexOf("=");
+            var name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
+            if (name === "JSESSIONID" || name.startsWith("SESSION")) {
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=" + window.location.hostname;
+            }
+        });
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+        } catch(e) {}
+    })();
+</script>
 </div>
 </body>
 </html>

@@ -1,1 +1,84 @@
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册 - 电商系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 400px; margin: 80px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        h2 { text-align: center; margin-bottom: 24px; }
+        label { display: block; margin-bottom: 8px; }
+        input { width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #409eff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #66b1ff; }
+        .link { text-align: center; margin-top: 12px; font-size: 14px; }
+        .error { color: #f56c6c; margin-bottom: 16px; padding: 12px; background-color: #fef0f0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>用户注册</h2>
+    <div id="errorMessage" class="error" style="display: none;"></div>
+    <form id="registerForm">
+        <label>用户名</label>
+        <input type="text" name="username" id="username" required>
+        <label>密码</label>
+        <input type="password" name="password" id="password" required minlength="6">
+        <label>邮箱</label>
+        <input type="email" name="email" id="email" required>
+        <button type="submit">注册</button>
+    </form>
+    <div class="link">
+        <a th:href="@{/login}">已有账号？立即登录</a>
+    </div>
+</div>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value;
+        const errorDiv = document.getElementById('errorMessage');
+        
+        errorDiv.style.display = 'none';
+        
+        if (!username || !password || !email) {
+            errorDiv.textContent = '请填写所有字段';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        if (password.length < 6) {
+            errorDiv.textContent = '密码长度至少6位';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, email })
+            });
+            
+            const result = await response.text();
+            
+            if (response.ok) {
+                alert('注册成功！请登录');
+                window.location.href = '/login';
+            } else {
+                errorDiv.textContent = result || '注册失败，请稍后重试';
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorDiv.textContent = '注册失败，请稍后重试';
+            errorDiv.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
