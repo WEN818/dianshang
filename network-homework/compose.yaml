@@ -2,7 +2,6 @@ services:
   mysql:
     image: 'mysql:8.0'
     container_name: mysql-network-homework
-    restart: unless-stopped
     environment:
       - MYSQL_DATABASE=network_homework
       - MYSQL_USER=network_user
@@ -12,25 +11,18 @@ services:
       - "3306:3306"
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
     volumes:
       - db-data:/var/lib/mysql
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   app:
     build:
       context: .
     image: network-homework-app
     container_name: network-homework-app
-    restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
@@ -39,15 +31,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/network_homework?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=network_user
       - SPRING_DATASOURCE_PASSWORD=network_password
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - "8080:8080"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 volumes:
   db-data:
-    driver: local

@@ -23,18 +23,13 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/register", "/register/page", "/login", "/logout", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/products/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/products/page", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
                 )
                 .httpBasic(httpBasic -> {});

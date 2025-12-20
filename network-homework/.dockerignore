@@ -1,13 +1,1 @@
-target/
-.git/
-.gitignore
-# .mvn/  # 注释掉，Dockerfile 需要这个目录
-*.md
-!README.md
-*.sh
-.env
-.idea/
-*.iml
-.DS_Store
-
 
