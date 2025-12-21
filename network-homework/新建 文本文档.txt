@@ -1,5 +1,0 @@
-cd network-homework          
-.\mvnw -DskipTests spring-boot:run
-运行
-http://localhost:8080/login
-登陆界面

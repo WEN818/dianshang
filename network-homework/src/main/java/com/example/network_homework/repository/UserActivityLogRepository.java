@@ -11,3 +11,5 @@ public interface UserActivityLogRepository extends JpaRepository<UserActivityLog
     List<UserActivityLog> findByUserIdOrderByTimestampDesc(String userId);
 }
 
+
+
